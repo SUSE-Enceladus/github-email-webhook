@@ -19,7 +19,7 @@ import secrets
 import time
 import uuid
 
-from utils import (
+from webhook_utils import (
     create_kms_key,
     create_role,
     get_key_policy,
@@ -35,11 +35,13 @@ request_secret = secrets.token_hex(20)
 function_name = input('Enter function name (git-email-hook): ') \
                 or 'git-email-hook'
 
-ses_region = input('Enter SES region name (us-east-1): ') or 'us-east-1'
+ses_region = input('Enter deployment region name (us-east-1): ') \
+             or 'us-east-1'
 
 if ses_region not in ('us-east-1', 'us-west-2', 'eu-west-1'):
     update_progress(
-        'SES region must be one of: us-east-1, us-west-2 or eu-west-1.',
+        'Deployment region must be one of: '
+        'us-east-1, us-west-2 or eu-west-1.',
         success=False
     )
 

@@ -22,6 +22,7 @@ The AWS account must have access to the following AWS services:
 - Lambda
 - KMS
 - IAM
+- SES (Simple Email Service)
 
 ## Install
 

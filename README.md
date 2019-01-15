@@ -1,12 +1,13 @@
 # GitHub Email Webhook
 
-This package provides a Python Lambda function which handles GitHub
+This package provides a Python 3 Lambda function which handles GitHub
 webhooks. It creates and sends an email to the provided source email address.
 The reason for the function is to replace the GitHub email service which is
 now deprecated.
 
 ## Requirements
 
+- python3
 - boto3
 
 ## Setup
@@ -26,7 +27,7 @@ The AWS account must have access to the following AWS services:
 
 ## Install
 
-To install the function and REST API call: `python deploy.py`.
+To install the function and REST API call: `python3 deploy.py`.
 
 During deployment the following values are used:
 

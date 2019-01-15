@@ -24,7 +24,7 @@ from webhook_utils import (
     create_role,
     get_key_policy,
     get_lambda_assume_role_policy,
-    get_lambda_ses_policy,
+    get_lambda_policy,
     kms_encrypt,
     update_progress
 )
@@ -35,10 +35,10 @@ request_secret = secrets.token_hex(20)
 function_name = input('Enter function name (git-email-hook): ') \
                 or 'git-email-hook'
 
-ses_region = input('Enter deployment region name (us-east-1): ') \
-             or 'us-east-1'
+deployment_region = input('Enter deployment region name (us-east-1): ') \
+                    or 'us-east-1'
 
-if ses_region not in ('us-east-1', 'us-west-2', 'eu-west-1'):
+if deployment_region not in ('us-east-1', 'us-west-2', 'eu-west-1'):
     update_progress(
         'Deployment region must be one of: '
         'us-east-1, us-west-2 or eu-west-1.',
@@ -52,7 +52,7 @@ if not source_email:
 access_key_id = input('Enter AWS Access Key ID (blank for default): ')
 secret_access_key = input('Enter AWS Secret Access Key (blank for default): ')
 
-kwargs = {'region_name': ses_region}
+kwargs = {'region_name': deployment_region}
 
 if access_key_id:
     kwargs['aws_access_key_id'] = access_key_id
@@ -75,10 +75,10 @@ role_arn = create_role(
     iam_client,
     function_name,
     function_name,
-    get_lambda_ses_policy(
+    get_lambda_policy(
         account_id,
         function_name,
-        ses_region
+        deployment_region
     ),
     get_lambda_assume_role_policy()
 )
@@ -137,7 +137,7 @@ lambda_client.create_function(
     Code={'ZipFile': code},
     Environment={
         'Variables': {
-            'SES_REGION': ses_region,
+            'DEPLOYMENT_REGION': deployment_region,
             'REQUEST_SECRET': enc_secret,
             'SOURCE_EMAIL': enc_email
         }
@@ -178,7 +178,7 @@ uri = 'arn:aws:apigateway:{region}:lambda:path/2015-03-31/functions/' \
       'invocations'
 
 uri = uri.format(
-    region=ses_region,
+    region=deployment_region,
     account_id=account_id,
     function_name=function_name
 )
@@ -208,7 +208,7 @@ update_progress('Added POST method response.', progress=70)
 source_arn = 'arn:aws:execute-api:{region}:{account_id}:{api_id}/*/POST/v1'
 
 source_arn = source_arn.format(
-    region=ses_region,
+    region=deployment_region,
     account_id=account_id,
     api_id=api['id']
 )
@@ -237,13 +237,15 @@ endpoint = 'https://{api_id}.execute-api.{region}.amazonaws.com/' \
 
 endpoint = endpoint.format(
     api_id=api['id'],
-    region=ses_region,
+    region=deployment_region,
     stage='default',
     resource='v1'
 )
 
 update_progress(
-    'Deployed function and REST API in {region}.'.format(region=ses_region),
+    'Deployed function and REST API in {region}.'.format(
+        region=deployment_region
+    ),
     progress=100
 )
 print(

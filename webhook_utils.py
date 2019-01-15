@@ -147,8 +147,8 @@ def get_lambda_assume_role_policy():
     return policy
 
 
-def get_lambda_ses_policy(account_id, function_name, region):
-    ses_policy = {
+def get_lambda_policy(account_id, function_name, region):
+    policy = {
         'Version': '2012-10-17',
         'Statement': [
             {
@@ -184,7 +184,7 @@ def get_lambda_ses_policy(account_id, function_name, region):
         ]
     }
 
-    return ses_policy
+    return policy
 
 
 def kms_encrypt(client, value, key_id):

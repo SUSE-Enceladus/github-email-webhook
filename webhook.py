@@ -34,7 +34,7 @@ def kms_decrypt(client, enc_value):
 kms_client = boto3.client('kms')
 
 EVENT_TYPES = ('ping', 'push',)
-SES_REGION = os.environ['SES_REGION']
+DEPLOYMENT_REGION = os.environ['DEPLOYMENT_REGION']
 
 enc_secret = os.environ['REQUEST_SECRET']
 SECRET = kms_decrypt(kms_client, enc_secret)
@@ -73,7 +73,7 @@ def send_email(data):
     try:
         client = boto3.client(
             'ses',
-            region_name=SES_REGION
+            region_name=DEPLOYMENT_REGION
         )
         client.send_email(
             Source=SOURCE_EMAIL,
